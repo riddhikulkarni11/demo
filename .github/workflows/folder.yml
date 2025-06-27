@@ -1,0 +1,56 @@
+name: Windows File Copy on Self-Hosted Runner
+
+on:
+
+  workflow_dispatch:  # allows manual triggering
+
+jobs:
+
+  file_copy:
+
+    runs-on: self-hosted  # use the self-hosted Windows runner
+
+    steps:
+
+      - name: Create MR1 and random.txt on Desktop
+
+        run: |
+
+          $desktop = "C:\Users\admin123\Desktop"
+
+          New-Item -Path "C:\Users\Medha\Desktop\MR1" -ItemType Directory -Force
+
+          Set-Content -Path "C:\Users\Medha\Desktop\MR1\random.txt" -Value "This is a sample file."
+
+      - name: Create MR2 on Desktop
+
+        run: |
+
+          $desktop = "C:\Users\Medha\Desktop\MR2"
+
+          New-Item -Path "C:\Users\Medha\Desktop\MR2" -ItemType Directory -Force
+
+      - name: Copy random.txt from folder1 to folder2
+
+        run: |
+
+          $desktop = "C:\Users\Medha\Desktop"
+
+          Copy-Item -Path "C:\Users\Medha\Desktop\MR1\random.txt" -Destination "C:\Users\Medha\Desktop\MR2" -Force
+
+      - name: Validate file exists in both folders
+
+        run: |
+
+          $desktop = "C:\Users\Medha\Desktop"
+
+          if ((Test-Path "C:\Users\Medha\Desktop\MR1") -and (Test-Path "C:\Users\Medha\Desktop\MR2")) {
+
+            Write-Output "File successfully copied and exists in both locations."
+
+          } else {
+
+            Write-Error "File missing in one of the folders!"
+
+          }
+ 
